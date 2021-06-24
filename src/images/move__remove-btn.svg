@@ -1,3 +1,1 @@
-<svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path fill-rule="evenodd" clip-rule="evenodd" d="M5.06029 3.8822L7.29955 1.64294L6.23889 0.582275L3.99962 2.82154L1.76048 0.582391L0.699821 1.64305L2.93896 3.8822L0.582031 6.23913L1.64269 7.29979L3.99963 4.94286L6.35667 7.29991L7.41734 6.23925L5.06029 3.8822Z" fill="white"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" fill="none" xmlns:v="https://vecta.io/nano"><path fill-rule="evenodd" d="M5.06 3.882L7.3 1.643 6.239.582 4 2.822 1.76.582.7 1.643l2.239 2.239L.582 6.239 1.643 7.3 4 4.943 6.357 7.3l1.061-1.061L5.06 3.882z" fill="#fff"/></svg>

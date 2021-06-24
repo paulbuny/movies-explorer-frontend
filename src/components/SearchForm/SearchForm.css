@@ -115,7 +115,7 @@
   min-height: 34px;
   border-radius: 50%;
   background-color: #4285F4;
-  background-image: url("../../images/search_arrow.png");
+  background-image: url("../../images/search_arrow.svg");
   background-position: center center;
   background-repeat: no-repeat;
 }
