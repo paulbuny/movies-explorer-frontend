@@ -1,0 +1,56 @@
+.saved-films {
+  margin: 0;
+  padding-bottom: 80px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #202020;
+}
+.saved-films__list {
+  width: 100%;
+  margin: 0;
+  padding: 70px 0 60px 0;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: center;
+  gap: 37px 24px;
+  list-style: none;
+}
+.saved-films__button {
+  padding: 11px 60px;
+  box-sizing: border-box;
+  min-width: 320px;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: center;
+  color: #FFFFFF;
+  background: #2F2F2F;
+  border-radius: 6px;
+}
+
+@media screen and (max-width: 860px) {
+  .saved-films__list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (max-width: 570px) {
+  .saved-films {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .saved-films__list {
+    padding: 40px 0 76px 0;
+    grid-template-columns: 1fr;
+  }
+  .saved-films__button {
+    max-width: 240px;
+    min-width: 100px;
+    width: 100%;
+  }
+}

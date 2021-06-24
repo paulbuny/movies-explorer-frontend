@@ -1,0 +1,111 @@
+.movie {
+  width: 100%;
+  min-height: 281px;
+  max-height: 281px;
+  box-sizing: border-box;
+  background: #222222;
+  box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  overflow: hidden;
+
+  cursor: pointer;
+}
+.movie__text-wrapper {
+  padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: minmax(25px, 290px) 1fr;
+  gap: 17px;
+}
+.movie__cover {
+  width: 100%;
+  max-height: 203px;
+  min-height: 203px;
+  -o-object-fit: cover;
+  object-fit: cover;
+  -o-object-position: center;
+  object-position: center;
+  transition: width .25s ease-in-out;
+  overflow: hidden;
+  cursor: pointer;
+}
+.movie__title {
+  margin: 0;
+  padding: 0;
+  min-width: calc(100% - 16px);
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.214;
+  color: #FFFFFF;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.movie__duration {
+  margin: 0;
+  padding: 0;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 11px;
+  line-height: 1.181;
+  color: #8B8B8B;
+}
+.movie__like {
+  align-self: center;
+  justify-self: flex-end;
+  width: 14px;
+  height: 12px;
+  background-image: url("../../images/like__button_disabled.svg");
+  background-position: center center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.movie__like_clicked {
+  background-image: url("../../images/like__button_active.svg");
+}
+
+.movie__remove-btn {
+  align-self: center;
+  justify-self: flex-end;
+  width: 14px;
+  height: 12px;
+  background-image: url("../../images/move__remove-btn.svg");
+  background-position: center center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.movie__remove-btn_visible {
+  display: block;
+}
+
+.movie__remove-btn_hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media screen and (max-width: 860px) {
+  .movie__cover {
+    min-height: 190px;
+    max-height: 190px;
+  }
+}
+
+@media screen and (max-width: 570px) {
+.movie__remove-btn_hidden {
+  display: block;
+  opacity: 1;
+  pointer-events: all;
+}
+.movie__title {
+  font-size: 12px;
+}
+.movie__duration {
+  font-size: 10px;
+}
+}

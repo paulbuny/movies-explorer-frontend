@@ -1,0 +1,130 @@
+.auth {
+  display: grid;
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 396px;
+  width: 100%;
+  min-height: 100vh;
+  justify-self: center;
+}
+.auth__header {
+  align-self: flex-end;
+}
+.auth__title {
+  margin: 40px 0;
+  padding: 0;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.208;
+  color: #FFFFFF;
+}
+.auth__form {
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+}
+.auth__label {
+  margin: 0 0 10px 0;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 1.2;
+  color: #8B8B8B;
+}
+.auth__input {
+  margin: 0 0 10px 0;
+  padding: 15px;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 1.230;
+
+  color: #FFFFFF;
+  background: #2F2F2F;
+  border-radius: 8px;
+  border: none;
+}
+.auth__input_error {
+  color: #EE3465;
+}
+.auth__error {
+  min-height: 10px;
+  margin: 0;
+  padding: 0;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 1.2;
+  color: #EE3465;
+}
+.auth__caption {
+  margin: 0;
+  padding: 0;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 1.214;
+  text-align: center;
+  color: #8B8B8B;
+}
+.auth__footer {
+  max-width: 100%;
+}
+.auth__input-submit {
+  min-width: 100%;
+  margin: 70px 0 16px 0;
+  padding: 13px;
+  box-sizing: border-box;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.214;
+  text-align: center;
+  color: #FFFFFF;
+  background-color: #4285F4;
+  border-radius: 3px;
+}
+.auth__link {
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 1.214;
+  text-align: center;
+  color: #4285F4;
+}
+
+@media screen and (max-width: 560px) {
+  .auth {
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 30px;
+  }
+  .auth__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .auth__title {
+    margin: 50px 0 80px 0;
+  }
+  .auth__footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .auth__caption {
+    font-size: 12px;
+  }
+  .auth__link {
+    font-size: 12px;
+  }
+}

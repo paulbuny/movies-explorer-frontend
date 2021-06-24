@@ -1,0 +1,44 @@
+.err-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+.err-page__title {
+  margin: 0;
+  padding: 0;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 140px;
+  line-height: 1.207;
+  text-align: center;
+  color: #FFFFFF;
+}
+.err-page__wrapper {
+  align-self: flex-end;
+  justify-self: center;
+}
+.err-page__message {
+  margin: 0;
+  padding: 0;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 1.187;
+  text-align: center;
+  color: #FFFFFF;
+}
+.err-page__button {
+  align-self: center;
+  justify-self: center;
+  width: fit-content;
+  height: fit-content;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 1.214;
+  text-align: center;
+  color: #4285F4;
+}
