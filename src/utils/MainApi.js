@@ -1,0 +1,124 @@
+class MainApi {
+  constructor({ baseUrl}) {
+    this._baseUrl = baseUrl;
+  }
+
+  // Проверка ответа от сервера
+  _getResponseStatus(res) {
+    if (res.ok) {
+      return res.json();
+    } else {
+      return Promise.reject(`${res.status}`);
+    }
+  }
+
+  // Получить токен пользователя
+  _getToken(token) {
+    return fetch(`${this.url}/users/me`, {
+      method: 'GET',
+      headers: {
+        'Authorization': token,
+        'Content-Type': 'application/json',
+      }
+    })
+    .then((res) => this._getResponseStatus(res));
+  }
+
+  // Получить все фильмы
+  getMovies(token) {
+    return fetch(`${this._baseUrl}/movies`, {
+      method: 'GET',
+      headers: {
+        'Authorization': token,
+        'Content-Type':'application/json',
+      }
+    })
+    .then((res) => this._getResponseStatus(res));
+  }
+
+  // Добавление фильма
+  addMovie(country, description, director, duration, id, image, nameEN, nameRU, trailer, year, token) {
+    return fetch(`${this._baseUrl}/movies`, {
+      headers: {
+        'Authorization': token,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        country,
+        description,
+        director,
+        duration,
+        movieID: id.toSting(),
+        image: `https://api.nomoreparties.co/beatfilm-movies/${image.url}`,
+        thumbnail: `https://api.nomoreparties.co/beatfilm-movies/${image.formats.thumbnail.url}`,
+        nameEN,
+        nameRU,
+        trailer,
+        year,
+      })
+    })
+    .then(res => this._getResponseStatus(res))
+  }
+
+  // Удаление фильма по id
+  deleteMovie(movieId, token) {
+    return fetch(`${this._baseUrl}/movies/${movieId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': token,
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((res) => this._getResponseStatus(res))
+  }
+
+  // Получение данных о пользователе
+  getCurrentUser(token) {
+    return fetch(`${this._baseUrl}/users/me`, {
+      method: 'GET',
+      headers: {
+        'Authorization': token,
+        'Content-type': 'application/json',
+      },
+    })
+    .then((res) => this._getResponseStatus(res))
+  }
+
+  // Войти в учетную запись
+  signIn(email, password) {
+    return fetch(`${this._baseUrl}/signin`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      })
+    })
+    .then((res) => this._getResponseStatus(res));
+  }
+
+  // Зарегистрировать учетную запись
+  signUp(name, email, password){
+    return fetch(`${this._baseUrl}/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      })
+    })
+    .then((res) => this._getResponseStatus(res));
+  }
+}
+
+const mainApi = new MainApi({
+  baseUrl: 'http://localhost:3005',
+})
+
+export default mainApi;
