@@ -46,6 +46,7 @@ function Profile(props) {
                     required
                     minLength="2"
                     maxLength="30"
+                    pattern='[а-яА-Яa-zA-ZёË\- ]{1,}'
                     onChange={handleOnValueChange}
               />
               </div>

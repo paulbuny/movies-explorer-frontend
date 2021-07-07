@@ -1,6 +1,7 @@
 import './SavedMovies.css';
 import { useState, useEffect } from 'react';
 import * as utils from '../../utils/utils';
+import * as errors from '../../utils/errors';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
@@ -12,6 +13,7 @@ function SavedMovies ({loggedIn, savedMovies, saved, onDeleteMovie, isPreloaderS
   const [lastSearchQuery, setLastSearchQuery] = useState();
   const [shortFilmsToggle, setShortFilmsToggle] = useState(false);
   const [movies, setMovies] = useState([]);
+  const [error, setError] = useState(searchError);
 
   function onSearchSubmit (query) {
     localStorage.setItem('saved-search-query', query);
@@ -34,8 +36,9 @@ function SavedMovies ({loggedIn, savedMovies, saved, onDeleteMovie, isPreloaderS
       setMovies(shortMovies);
     } else {
       setMovies([]);
+      setError(errors.BEGIN_SEARCHING);
     }
-  }, [savedMovies, shortFilmsToggle, lastSearchQuery]);
+  }, [savedMovies, searchError, shortFilmsToggle, lastSearchQuery]);
 
   return(
     <>
@@ -49,7 +52,7 @@ function SavedMovies ({loggedIn, savedMovies, saved, onDeleteMovie, isPreloaderS
             saved={saved}
             movies={movies}
             onDeleteMovie={onDeleteMovie}
-            searchError={searchError}
+            searchError={error}
             searchQuery={searchQuery}
           />
         }

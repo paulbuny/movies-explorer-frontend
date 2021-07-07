@@ -117,7 +117,7 @@ function App() {
     } else {
       setIsPreloaderShown(false);
       setFilteredMovies([]);
-      setSearchError('Начните с поиска фильмов');
+      setSearchError(errors.BEGIN_SEARCHING);
     }
   }, [movies, lastSearchQuery, shortFilmsToggle]);
 
@@ -195,7 +195,6 @@ function App() {
 
   function onSearchSubmit(query) {
     localStorage.setItem('search-query', query);
-    console.log(localStorage.getItem('search-query'));
     setSearchQuery(query);
   }
 

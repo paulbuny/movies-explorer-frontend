@@ -33,6 +33,7 @@ function Register({ onRegister }) {
               required
               minLength="2"
               maxLength="30"
+              pattern='[а-яА-Яa-zA-ZёË\- ]{1,}'
               value={values.name || ''}
               onChange={handleOnChange}
         />
