@@ -9,27 +9,33 @@ import Preloader from '../Preloader/Preloader';
 
 function SavedMovies ({loggedIn, savedMovies, saved, onDeleteMovie, isPreloaderShown, searchError}) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [lastSearchQuery, setLastSearchQuery] = useState();
   const [shortFilmsToggle, setShortFilmsToggle] = useState(false);
   const [movies, setMovies] = useState([]);
 
   function onSearchSubmit (query) {
-      setSearchQuery(query);
+    localStorage.setItem('saved-search-query', query);
+    setSearchQuery(query);
   }
 
   function onShortFilmToggle () {
     setShortFilmsToggle(!shortFilmsToggle);
   }
 
+  useEffect(()=> {
+    setLastSearchQuery(localStorage.getItem('saved-search-query'));
+  }, [searchQuery])
+
   useEffect(() => {
-      const searchedMovies = utils.filterBySearchQuery(savedMovies, searchQuery);
+    if(lastSearchQuery) {
+      const searchedMovies = utils.filterBySearchQuery(savedMovies, lastSearchQuery);
       const shortMovies = utils.filterByShortFilms(searchedMovies, shortFilmsToggle);
 
       setMovies(shortMovies);
-
-      if(searchQuery.length === 0) {
-        setMovies([]);
-      }
-  }, [savedMovies, shortFilmsToggle, searchQuery]);
+    } else {
+      setMovies([]);
+    }
+  }, [savedMovies, shortFilmsToggle, lastSearchQuery]);
 
   return(
     <>

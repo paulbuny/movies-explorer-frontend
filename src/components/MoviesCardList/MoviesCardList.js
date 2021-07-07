@@ -64,9 +64,6 @@ function MoviesCardList (props) {
       {
         isShown ? <span className="saved-films__error">{props.searchError}</span> : ''
       }
-      {
-        props.searchQuery.length === 0 ? <span className="saved-films__error">Начните с поиска</span> : ''
-      }
       <ul className="saved-films__list">
         {
           movies.map ((movie) => (

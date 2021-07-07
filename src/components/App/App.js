@@ -29,6 +29,7 @@ function App() {
   const [isPreloaderShown, setIsPreloaderShown] = useState(false);
   const [shortFilmsToggle, setShortFilmsToggle] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [lastSearchQuery, setLastSearchQuery] = useState();
   const [searchError, setSearchError] = useState();
   const [movies, setMovies] = useState([]);
   const [savedMovies, setSavedMovies] = useState([]);
@@ -75,6 +76,8 @@ function App() {
 
   function onLogout () {
     localStorage.removeItem('token');
+    localStorage.removeItem('search-query');
+    setLastSearchQuery('');
     setCurrentUser({});
     setSavedMovies([]);
     setMovies([]);
@@ -96,11 +99,16 @@ function App() {
   }
 
   // Ниже код относящийся к фильмам
+
+  useEffect(() => {
+    setLastSearchQuery(localStorage.getItem('search-query'));
+  }, [searchQuery]);
+
   useEffect(() => {
     setIsPreloaderShown(true);
 
-    if (searchQuery.length !== 0) {
-      const searchedMovies = utils.filterBySearchQuery(movies, searchQuery);
+    if (lastSearchQuery) {
+      const searchedMovies = utils.filterBySearchQuery(movies, lastSearchQuery);
       const shortMovies = utils.filterByShortFilms(searchedMovies, shortFilmsToggle);
 
       setSearchError(errors.NOT_FOUND);
@@ -109,17 +117,11 @@ function App() {
     } else {
       setIsPreloaderShown(false);
       setFilteredMovies([]);
+      setSearchError('Начните с поиска фильмов');
     }
-  }, [movies, searchQuery, shortFilmsToggle]);
+  }, [movies, lastSearchQuery, shortFilmsToggle]);
 
   useEffect(() =>{
-
-    if (loggedIn && localStorage.getItem('movies')) {
-
-      setSavedMovies(JSON.parse(localStorage.getItem('saved-movies')))
-      setMovies(JSON.parse(localStorage.getItem('movies')));
-
-    } else {
       mainApi.getMovies(token)
       .then((savedMovies) => {
 
@@ -156,9 +158,8 @@ function App() {
           });
       })
       .catch((err) => console.log(err));
-    }
 
-  }, [loggedIn, token]);
+  }, [loggedIn, token, searchQuery]);
 
   function onSaveMovie (movie) {
 
@@ -193,6 +194,8 @@ function App() {
   }
 
   function onSearchSubmit(query) {
+    localStorage.setItem('search-query', query);
+    console.log(localStorage.getItem('search-query'));
     setSearchQuery(query);
   }
 
