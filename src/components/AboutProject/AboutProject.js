@@ -1,8 +1,8 @@
 import './AboutProject.css';
 
-function AboutProject() {
+function AboutProject({ scrollRef }) {
   return (
-    <section className="about page_side_paddings">
+    <section className="about page_side_paddings" ref={scrollRef}>
       <h2 className="title">О проекте</h2>
       <div className="about__two-columns">
         <div className="about__main-text">

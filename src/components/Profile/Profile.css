@@ -75,6 +75,20 @@
   line-height: 1.230;
   color: #FFFFFF;
 }
+.profile__button:disabled {
+  opacity: .5;
+}
+.profile__error {
+  min-height: 10px;
+  margin: 0;
+  padding: 0;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 1.2;
+  color: #EE3465;
+}
 .profile__button_logout {
   color: #EE3465;
 }

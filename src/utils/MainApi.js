@@ -37,7 +37,7 @@ class MainApi {
   }
 
   // Добавление фильма
-  addMovie(country, description, director, duration, id, image, nameEN, nameRU, trailer, year, token) {
+  addMovie({id, country, description, director, duration, image, thumbnail, nameEN, nameRU, trailer, year, token}) {
     return fetch(`${this._baseUrl}/movies`, {
       headers: {
         'Authorization': token,
@@ -45,13 +45,13 @@ class MainApi {
       },
       method: 'POST',
       body: JSON.stringify({
+        movieId: id.toString(),
         country,
         description,
         director,
         duration,
-        movieID: id.toSting(),
-        image: `https://api.nomoreparties.co/beatfilm-movies/${image.url}`,
-        thumbnail: `https://api.nomoreparties.co/beatfilm-movies/${image.formats.thumbnail.url}`,
+        image: image,
+        thumbnail: thumbnail,
         nameEN,
         nameRU,
         trailer,
@@ -79,8 +79,23 @@ class MainApi {
       method: 'GET',
       headers: {
         'Authorization': token,
-        'Content-type': 'application/json',
+        'Content-Type': 'application/json',
       },
+    })
+    .then((res) => this._getResponseStatus(res))
+  }
+
+  updateUserProfile(name, email, token){
+    return fetch(`${this._baseUrl}/users/me`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        email,
+      })
     })
     .then((res) => this._getResponseStatus(res))
   }
