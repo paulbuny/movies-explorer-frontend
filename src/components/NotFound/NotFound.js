@@ -1,9 +1,11 @@
 import './NotFound.css';
+import { useHistory } from 'react-router';
 
 function NotFound(props) {
-  function goBack () {
+  const history = useHistory();
 
-    props.onClick();
+  function goBack () {
+    history.goBack();
   }
 
   return (

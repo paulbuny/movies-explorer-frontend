@@ -1,27 +1,34 @@
 import { useState } from 'react';
 import './MoviesCard.css';
+import * as utils from '../../utils/utils';
 
-function MoviesCard (props) {
-  const [removeBtn, setRemoveBtn] = useState(false);
+function MoviesCard ({movie, saved, onSaveMovie, onDeleteMovie}) {
 
-  function handleOnMouseEnter () {
-    setRemoveBtn(true);
+  const [isSaved, setIsSaved] = useState(movie.isSaved);
+
+  function handleOnLikeClick () {
+    if (!movie.isSaved) {
+      onSaveMovie(movie);
+      setIsSaved((prev) => !prev);
+    }
   }
 
-  function handleOnMouseLeave () {
-    setRemoveBtn(false);
+  function handleOnRemoveClick () {
+    onDeleteMovie(movie._id);
   }
 
   return (
-    <li className="movie" onMouseEnter={handleOnMouseEnter} onMouseLeave={handleOnMouseLeave}>
-      <img src={props.cover} alt={props.title} className="movie__cover" />
+    <li className="movie">
+      <a href={movie.trailer || movie.trailerLink} rel="noreferrer" target="_blank">
+        <img src={movie.image.url || movie.image } alt={movie.nameRU} className="movie__cover" />
+      </a>
       <div className="movie__text-wrapper">
-        <p className="movie__title">{props.title}</p>
-        {props.saved ?
-                <button className={removeBtn ? "button movie__remove-btn movie__remove-btn_visible" : 'button movie__remove-btn movie__remove-btn_hidden' }></button> :
-                <button className={props.liked ? "button movie__like movie__like_clicked" : "button movie__like" }></button>
+        <p className="movie__title">{movie.nameRU}</p>
+        {saved ?
+                <button className="button movie__remove-btn movie__remove-btn_visible" onClick={handleOnRemoveClick}></button> :
+                <button className={isSaved ? "button movie__like movie__like_clicked" : "button movie__like" } onClick={handleOnLikeClick}></button>
         }
-        <p className="movie__duration">{props.duration}</p>
+        <p className="movie__duration">{utils.convertToCorrectTiming(movie.duration)}</p>
       </div>
     </li>
   )

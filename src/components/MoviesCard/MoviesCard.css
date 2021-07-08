@@ -68,6 +68,10 @@
 .movie__like_clicked {
   background-image: url("../../images/like__button_active.svg");
 }
+.movie:hover .movie__remove-btn {
+  visibility: visible;
+  display: block;
+}
 
 .movie__remove-btn {
   align-self: center;
@@ -78,15 +82,8 @@
   background-position: center center;
   background-size: contain;
   background-repeat: no-repeat;
-}
-
-.movie__remove-btn_visible {
+  visibility: hidden;
   display: block;
-}
-
-.movie__remove-btn_hidden {
-  opacity: 0;
-  pointer-events: none;
 }
 
 @media screen and (max-width: 860px) {

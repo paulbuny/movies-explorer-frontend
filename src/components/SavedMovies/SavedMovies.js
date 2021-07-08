@@ -1,48 +1,61 @@
 import './SavedMovies.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import * as utils from '../../utils/utils';
+import * as errors from '../../utils/errors';
 import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import SearchForm from '../SearchForm/SearchForm';
+import Preloader from '../Preloader/Preloader';
 
-// Временное решение для карточек
-import pic_1 from '../../images/pic__COLOR_pic.jpg';
-import pic_6 from '../../images/pic__COLOR_pic_5.jpg';
-import pic_9 from '../../images/pic__COLOR_pic_8.jpg';
+function SavedMovies ({loggedIn, savedMovies, saved, onDeleteMovie, isPreloaderShown, searchError}) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [lastSearchQuery, setLastSearchQuery] = useState();
+  const [shortFilmsToggle, setShortFilmsToggle] = useState(false);
+  const [movies, setMovies] = useState([]);
+  const [error, setError] = useState(searchError);
 
-function SavedMovies (props) {
+  function onSearchSubmit (query) {
+    localStorage.setItem('saved-search-query', query);
+    setSearchQuery(query);
+  }
 
-      // Временное решение для сохраненных фильмов
-      const [SavedMovies, setSavedMovies] = useState([
-        {
-          id: 1,
-          title: '33 слова о дизайне',
-          duration: '1ч 47м',
-          cover: pic_1,
-          liked: true,
-        },
-        {
-          id: 6,
-          title: 'Киноальманах «100 лет дизайна»',
-          duration: '1ч 47м',
-          cover: pic_6,
-          liked: true,
-        },
-        {
-          id: 9,
-          title: 'В погоне за Бенкси',
-          duration: '1ч 47м',
-          cover: pic_9,
-          liked: true,
-        }
-      ])
+  function onShortFilmToggle () {
+    setShortFilmsToggle(!shortFilmsToggle);
+  }
+
+  useEffect(()=> {
+    setLastSearchQuery(localStorage.getItem('saved-search-query'));
+  }, [searchQuery])
+
+  useEffect(() => {
+    if(lastSearchQuery) {
+      const searchedMovies = utils.filterBySearchQuery(savedMovies, lastSearchQuery);
+      const shortMovies = utils.filterByShortFilms(searchedMovies, shortFilmsToggle);
+
+      setMovies(shortMovies);
+    } else {
+      setMovies([]);
+      setError(errors.BEGIN_SEARCHING);
+    }
+  }, [savedMovies, searchError, shortFilmsToggle, lastSearchQuery]);
 
   return(
     <>
-    <Header history={props.history} loggedIn={true} />
-    <main>
-      <SearchForm />
-      <MoviesCardList saved={true} movieList={SavedMovies}/>
+    <Header loggedIn={loggedIn} />
+    <main className="movies">
+      <SearchForm onShortFilmToggle={onShortFilmToggle} onSearchSubmit={onSearchSubmit} />
+        {
+          isPreloaderShown ?
+          <Preloader /> :
+          <MoviesCardList
+            saved={saved}
+            movies={movies}
+            onDeleteMovie={onDeleteMovie}
+            searchError={error}
+            searchQuery={searchQuery}
+          />
+        }
     </main>
     <Footer />
     </>

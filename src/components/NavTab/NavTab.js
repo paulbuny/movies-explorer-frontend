@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import './NavTab.css';
 
 function NavTab (props) {
@@ -20,9 +20,9 @@ function NavTab (props) {
             <div className="menu__main-wrapper">
               <button className="button menu__close-btn" onClick={toggleBurgerMenu}></button>
               <ul className="menu__nav-wrapper">
-                <li className="menu__nav-item"><Link className={props.history.location.pathname === "/" ? "link menu__link menu__link_active" : "link menu__link"} to="/">Главная</Link></li>
-                <li className="menu__nav-item"><Link className={props.history.location.pathname === "/movies" ? "link menu__link menu__link_active" : "link menu__link"} to="/movies">Фильмы</Link></li>
-                <li className="menu__nav-item"><Link className={props.history.location.pathname === "/saved-movies" ? "link menu__link menu__link_active" : "link menu__link"} to="/saved-movies">Сохранённые фильмы</Link></li>
+                <li className="menu__nav-item"><Link className="link menu__link" to="/">Главная</Link></li>
+                <li className="menu__nav-item"><NavLink activeClassName="menu__link_active" className="link menu__link" to="/movies">Фильмы</NavLink></li>
+                <li className="menu__nav-item"><NavLink activeClassName="menu__link_active" className="link menu__link" to="/saved-movies">Сохранённые фильмы</NavLink></li>
               </ul>
             </div>
             <Link to="/profile" className="link menu__link menu__link_authorized">Аккаунт</Link>

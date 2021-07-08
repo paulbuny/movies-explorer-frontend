@@ -5,14 +5,21 @@ import Techs from '../Techs/Techs';
 import AboutMe from '../AboutMe/AboutMe';
 import Portfolio from '../Portfolio/Portfolio';
 import Footer from '../Footer/Footer';
+import { useRef } from 'react';
 
 function Main(props) {
+  const scrollRef = useRef(null);
+
+  function executeScroll () {
+    scrollRef.current.scrollIntoView({ behavior: 'smooth' });
+  }
+
   return (
     <>
       <Header history={props.history} loggedIn={props.loggedIn} />
       <main>
-        <Promo />
-        <AboutProject />
+        <Promo handlerOnClick={executeScroll} />
+        <AboutProject scrollRef={scrollRef}/>
         <Techs />
         <AboutMe />
         <Portfolio />
