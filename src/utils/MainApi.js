@@ -126,8 +126,7 @@ class MainApi {
 }
 
 const mainApi = new MainApi({
-  // baseUrl: 'https://api.peacewalker.nomoredomains.icu',
-  baseUrl: 'http://localhost:3005',
+  baseUrl: 'https://api.peacewalker.nomoredomains.icu',
 })
 
 export default mainApi;

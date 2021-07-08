@@ -180,10 +180,12 @@ function App() {
       })
       .then((savedMovies) => {
         setIsPreloaderShown(true);
+        const localySavedMovies = JSON.parse(localStorage.getItem('movies'));
 
-        moviesApi.getMovies()
+        if(!localySavedMovies) {
+
+          moviesApi.getMovies()
           .then((movies) => {
-
             const newMovies = movies.map(movie => {
               const movieImage = utils.convertImagesUrls(movie.image.url);
               const movieThumbnail = utils.convertImagesUrls(movie.image.formats.thumbnail.url);
@@ -205,6 +207,15 @@ function App() {
           .finally(() => {
             setIsPreloaderShown(false);
           });
+
+        } else {
+
+          setIsPreloaderShown(false);
+          setSearchError('');
+
+          setMovies(utils.checkForSavedMovies(localySavedMovies, savedMovies));
+
+        }
       })
       .catch((err) => setPopupErrMessage([true, utils.getErrors(err)]));
 
@@ -251,13 +262,13 @@ function App() {
                           onProfileInfoChange={onProfileInfoChange}
           />}
 
-          <Route path='/signup'>
+          {!loggedIn && <Route path='/signup'>
             <Register onRegister={onRegister} authMessage={authMessage}/>
-          </Route>
+          </Route>}
 
-          <Route path='/signin'>
+          {!loggedIn && <Route path='/signin'>
             <Login onLogin={onLogin} authMessage={authMessage}/>
-          </Route>
+          </Route>}
 
           <Route path='*'>
             <NotFound />
