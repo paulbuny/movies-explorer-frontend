@@ -1,15 +1,36 @@
 import logo from '../../images/logo.svg';
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from "react";
 import { useFormValidation } from '../../utils/formValidation';
 import './Register.css';
 
-function Register({ onRegister }) {
+function Register({ onRegister, authMessage }) {
   const {values, errors, isValid, handleOnChange} = useFormValidation();
+  const [opacity, setOpacity] = useState("0");
+  const [errMsg, setErrMsg] = useState(authMessage);
 
   function handleSubmit (e) {
     e.preventDefault();
     onRegister(values.name, values.email, values.password);
   }
+
+  useEffect(() => {
+    setErrMsg(authMessage);
+
+    return () => {
+
+    }
+  }, [authMessage]);
+
+  useEffect(() => {
+    if (authMessage[0] === true) {
+      setOpacity("100%");
+      setTimeout(() => {
+        setOpacity("0%");
+        authMessage[0] = false;
+      }, 5000);
+    }
+  }, [errMsg, authMessage]);
 
   return (
     <section className="auth">
@@ -64,6 +85,7 @@ function Register({ onRegister }) {
         <span className="auth__error">{errors.password}</span>
       </form>
       <div className="auth__footer">
+      <span className="profile__error" style={{opacity: opacity}}>{errMsg[1]}</span>
         <button className="button auth__input-submit" form="register" type="submit" disabled={!isValid}>Зарегистрироваться</button>
         <p className="auth__caption">Уже зарегистрированы?&nbsp;<Link className="link auth__link" to='/signin'>Войти</Link></p>
       </div>

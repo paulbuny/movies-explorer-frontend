@@ -1,5 +1,5 @@
 import './App.css';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
@@ -19,90 +19,115 @@ import NotFound from '../NotFound/NotFound';
 import PopupMessage from '../PopupMessage/PopupMessage';
 
 function App() {
-  let history = useHistory();
-
   const [currentUser, setCurrentUser] = useState({
     name: '',
     email: '',
   });
   const [loggedIn, setLoggedIn] = useState(false);
-  const [token, setToken] = useState(`Bearer ${localStorage.getItem('token')}`);
+  const [token, setToken] = useState(localStorage.getItem('token'));
   const [isPreloaderShown, setIsPreloaderShown] = useState(false);
   const [shortFilmsToggle, setShortFilmsToggle] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [lastSearchQuery, setLastSearchQuery] = useState();
   const [searchError, setSearchError] = useState();
-  const [popupErrMessage, setPopupErrMessage] = useState();
+  const [popupErrMessage, setPopupErrMessage] = useState([false, '']);
+  const [authMessage, setAuthMessage] = useState('');
   const [movies, setMovies] = useState([]);
   const [savedMovies, setSavedMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
 
+  let history = useHistory();
+  const location = useLocation();
+  const path = location.pathname
+
   // Ниже код относящийся к данным пользователя
-  useEffect(() => {
-
-    if (token) {
-      mainApi.getCurrentUser(token)
-      .then((res) => {
-        setCurrentUser({
-          name: res.name,
-          email: res.email,
-        })
-
-        setLoggedIn(true);
-        history.push('/movies');
-      })
-      .catch((err) => setPopupErrMessage(utils.getErrors(err)));
-    }
-  }, [history, token]);
-
-  function onRegister (name, email, password) {
-    console.log(name);
-    console.log(email);
-    console.log(password);
-    mainApi.signUp(name, email, password)
-      .then(() => {
-        history.push('/signin');
-      })
-      .catch((err) => setPopupErrMessage(utils.getErrors(err)));
-  }
-
   function onLogin (email, password) {
     mainApi.signIn(email, password)
     .then((res) => {
       if (res) {
         localStorage.setItem('token', res.token);
-        setToken(`Bearer ${res.token}`);
+        setToken(res.token);
         history.push('/movies');
       }
     })
-    .catch((err) => setPopupErrMessage(utils.getErrors(err)));
+    .catch((err) => setAuthMessage([true, utils.getErrors(err)]));
   }
 
-  function onLogout () {
-    localStorage.removeItem('token');
-    localStorage.removeItem('search-query');
-    setLastSearchQuery('');
-    setCurrentUser({});
-    setSavedMovies([]);
-    setMovies([]);
-    setLoggedIn(false);
-    history.push('/');
-    localStorage.clear();
+  function onRegister (name, email, password) {
+    mainApi.signUp(name, email, password)
+      .then((res) => {
+        if(res.email) {
+          onLogin(email, password)
+        }
+      })
+      .catch((err) => setAuthMessage([true, utils.getErrors(err)]));
   }
 
   function onProfileInfoChange (name, email) {
+
     mainApi.updateUserProfile(name, email, token)
     .then((res) => {
       setCurrentUser({
         name: res.name,
         email: res.email,
       });
-      historyPushBackward();
+      setPopupErrMessage([true, 'Данные пользователя успешно обновлены!']);
     })
-    .catch((err) => setPopupErrMessage(utils.getErrors(err)));
+    .catch((err) => setPopupErrMessage([true, utils.getErrors(err)]));
+  }
+
+  function onLogout () {
+    setLastSearchQuery('');
+    setCurrentUser({});
+    setSavedMovies([]);
+    setMovies([]);
+    setLoggedIn(false);
+
+    localStorage.clear();
+
+    history.push('/');
   }
 
   // Ниже код относящийся к фильмам
+
+  function onSaveMovie (movie) {
+
+    mainApi.addMovie({
+      id: movie.id,
+      country: movie.country,
+      description: movie.description,
+      director: movie.director,
+      duration: movie.duration,
+      image: movie.image.url,
+      thumbnail: movie.image.formats.thumbnail.url,
+      nameEN: movie.nameEN,
+      nameRU: movie.nameRU,
+      trailer: movie.trailerLink,
+      year: movie.year,
+      token: token
+    })
+    .then((res) => {
+      setSavedMovies([...savedMovies, res]);
+    })
+    .catch((err) => setPopupErrMessage([true, utils.getErrors(err)]));
+  }
+
+  function onDeleteMovie (id) {
+    mainApi.deleteMovie(id, token)
+    .then((res) => {
+      const savedMoviesCopy = savedMovies.filter((savedMovie) => savedMovie._id !== res._id);
+      setSavedMovies(savedMoviesCopy);
+    });
+  }
+
+  function onSearchSubmit(query) {
+    localStorage.setItem('search-query', query);
+    setSearchQuery(query);
+  }
+
+  function onShortFilmToggle (isChecked) {
+    setShortFilmsToggle(isChecked);
+  }
 
   useEffect(() => {
     setLastSearchQuery(localStorage.getItem('search-query'));
@@ -123,7 +148,28 @@ function App() {
 
   }, [movies, lastSearchQuery, shortFilmsToggle, savedMovies]);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      mainApi.getCurrentUser(token)
+      .then((res) => {
+        setCurrentUser({
+          name: res.name,
+          email: res.email,
+        })
+
+        setLoggedIn(true);
+        history.push(path)
+      })
+      .catch((err) => setPopupErrMessage([true, utils.getErrors(err)]));
+    } else {
+      localStorage.removeItem('token');
+    }
+  }, [history, path]);
+
   useEffect(() =>{
+
       mainApi.getMovies(token)
       .then((savedMovies) => {
 
@@ -154,71 +200,27 @@ function App() {
           })
           .catch((err) => {
             setSearchError(errors.ERROR_500);
-            setPopupErrMessage(utils.getErrors(err));
+            setPopupErrMessage(true, utils.getErrors(err));
           })
           .finally(() => {
             setIsPreloaderShown(false);
           });
       })
-      .catch((err) => setPopupErrMessage(utils.getErrors(err)));
+      .catch((err) => setPopupErrMessage([true, utils.getErrors(err)]));
 
   }, [loggedIn, token, searchQuery]);
 
-  function onSaveMovie (movie) {
-
-    mainApi.addMovie({
-      id: movie.id,
-      country: movie.country,
-      description: movie.description,
-      director: movie.director,
-      duration: movie.duration,
-      image: movie.image.url,
-      thumbnail: movie.image.formats.thumbnail.url,
-      nameEN: movie.nameEN,
-      nameRU: movie.nameRU,
-      trailer: movie.trailerLink,
-      year: movie.year,
-      token: token
-    })
-    .then((res) => {
-      setSavedMovies([...savedMovies, res]);
-    })
-    .catch((err) => setPopupErrMessage(utils.getErrors(err)));
-  }
-
-  function onDeleteMovie (id) {
-    mainApi.deleteMovie(id, token)
-    .then((res) => {
-      const savedMoviesCopy = savedMovies.filter((savedMovie) => savedMovie._id !== res._id);
-      setSavedMovies(savedMoviesCopy);
-    });
-  }
-
-  function onSearchSubmit(query) {
-    localStorage.setItem('search-query', query);
-    setSearchQuery(query);
-  }
-
-  function onShortFilmToggle (isChecked) {
-    setShortFilmsToggle(isChecked);
-  }
-
-  // Фунцкция для 404-ой страницы по возврату назад по истории навигации
-  function historyPushBackward () {
-    history.goBack();
-  }
-
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <PopupMessage message={popupErrMessage} />
       <div className="page">
         <Switch>
           <Route exact path='/'>
             <Main loggedIn={loggedIn} />
           </Route>
-          {loggedIn && (<ProtectedRoute exact path='/movies'
-                          loggedIn={loggedIn}
+          {loggedIn && <ProtectedRoute path='/movies'
                           component={Movies}
+                          redirect="/"
+                          loggedIn={loggedIn}
                           isPreloaderShown={isPreloaderShown}
                           searchError={searchError}
                           searchQuery={searchQuery}
@@ -228,34 +230,41 @@ function App() {
                           onSearchSubmit={onSearchSubmit}
                           filteredMovies={filteredMovies}
                           saved={false}
-                          />)}
-          {loggedIn && (<ProtectedRoute exact path='/saved-movies'
-                          loggedIn={loggedIn}
+                          />}
+          {loggedIn && <ProtectedRoute path='/saved-movies'
                           component={SavedMovies}
+                          redirect="/"
+                          loggedIn={loggedIn}
                           isPreloaderShown={isPreloaderShown}
                           searchError={searchError}
                           setSearchError={setSearchError}
                           onDeleteMovie={onDeleteMovie}
                           savedMovies={savedMovies}
                           saved={true}
-          />)}
-          {loggedIn && (<ProtectedRoute exact path='/profile'
-                          loggedIn={loggedIn}
+          />}
+          {loggedIn && <ProtectedRoute path='/profile'
                           component={Profile}
+                          redirect="/"
+                          loggedIn={loggedIn}
                           currentUser={currentUser}
                           onLogout={onLogout}
                           onProfileInfoChange={onProfileInfoChange}
-          />)}
-          <Route exact path='/signup'>
-            <Register onRegister={onRegister} />
+          />}
+
+          <Route path='/signup'>
+            <Register onRegister={onRegister} authMessage={authMessage}/>
           </Route>
-          <Route exact path='/signin'>
-            <Login onLogin={onLogin} />
+
+          <Route path='/signin'>
+            <Login onLogin={onLogin} authMessage={authMessage}/>
           </Route>
-          <Route exact path='*'>
-            <NotFound onClick={historyPushBackward} />
+
+          <Route path='*'>
+            <NotFound />
           </Route>
+
         </Switch>
+      <PopupMessage message={popupErrMessage} />
       </div>
     </CurrentUserContext.Provider>
   );

@@ -10,17 +10,18 @@ export default function PopupMessage ({ message }) {
   }, [message]);
 
   useEffect(() => {
-    if (message !== "") {
+    if (message[0] === true) {
       setOpacity("100%");
       setTimeout(() => {
         setOpacity("0%");
+        message[0] = false;
       }, 5000);
     }
   }, [errMsg, message]);
 
    return (
      <div className="pop-up" style={{opacity: opacity}}>
-       <span className="pop-up__message">{errMsg}</span>
+       <span className="pop-up__message">{errMsg[1]}</span>
      </div>
    )
 }

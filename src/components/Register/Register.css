@@ -74,11 +74,12 @@
   color: #8B8B8B;
 }
 .auth__footer {
+  margin-top: 70px;
   max-width: 100%;
 }
 .auth__input-submit {
   min-width: 100%;
-  margin: 70px 0 16px 0;
+  margin: 0px 0 16px 0;
   padding: 13px;
   box-sizing: border-box;
   font-family: Inter, Arial, Helvetica, sans-serif;

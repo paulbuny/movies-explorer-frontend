@@ -12,24 +12,13 @@ class MainApi {
     }
   }
 
-  // Получить токен пользователя
-  _getToken(token) {
-    return fetch(`${this.url}/users/me`, {
-      method: 'GET',
-      headers: {
-        'Authorization': token,
-        'Content-Type': 'application/json',
-      }
-    })
-    .then((res) => this._getResponseStatus(res));
-  }
-
   // Получить все фильмы
   getMovies(token) {
     return fetch(`${this._baseUrl}/movies`, {
       method: 'GET',
       headers: {
-        'Authorization': token,
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
         'Content-Type':'application/json',
       }
     })
@@ -40,7 +29,8 @@ class MainApi {
   addMovie({id, country, description, director, duration, image, thumbnail, nameEN, nameRU, trailer, year, token}) {
     return fetch(`${this._baseUrl}/movies`, {
       headers: {
-        'Authorization': token,
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -66,7 +56,8 @@ class MainApi {
     return fetch(`${this._baseUrl}/movies/${movieId}`, {
       method: 'DELETE',
       headers: {
-        'Authorization': token,
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     })
@@ -78,7 +69,8 @@ class MainApi {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'GET',
       headers: {
-        'Authorization': token,
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     })
@@ -89,7 +81,8 @@ class MainApi {
     return fetch(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       headers: {
-        'Authorization': token,
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({

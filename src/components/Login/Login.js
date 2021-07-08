@@ -1,9 +1,30 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import logo from '../../images/logo.svg';
 import { useFormValidation } from "../../utils/formValidation";
 
-function Login({ onLogin }) {
+function Login({ onLogin, authMessage }) {
   const {values, errors, isValid, handleOnChange} = useFormValidation();
+  const [opacity, setOpacity] = useState("0");
+  const [errMsg, setErrMsg] = useState(authMessage);
+
+  useEffect(() => {
+    setErrMsg(authMessage);
+
+    return () => {
+      
+    }
+  }, [authMessage]);
+
+  useEffect(() => {
+    if (authMessage[0] === true) {
+      setOpacity("100%");
+      setTimeout(() => {
+        setOpacity("0%");
+        authMessage[0] = false;
+      }, 5000);
+    }
+  }, [errMsg, authMessage]);
 
   function handleSubmit (e) {
     e.preventDefault();
@@ -50,6 +71,7 @@ function Login({ onLogin }) {
         <span className="auth__error">{errors.password}</span>
       </form>
       <div className="auth__footer">
+        <span className="profile__error" style={{opacity: opacity}}>{errMsg[1]}</span>
         <button className="button auth__input-submit" form="login" type="submit" disabled={!isValid}>Войти</button>
         <p className="auth__caption">Ещё не зарегистрированы?&nbsp;<Link className="link auth__link" to='/signup'>Регистрация</Link></p>
       </div>
