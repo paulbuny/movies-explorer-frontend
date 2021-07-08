@@ -8,7 +8,7 @@ class MainApi {
     if (res.ok) {
       return res.json();
     } else {
-      return Promise.reject(`${res.status}`);
+      return Promise.reject(new Error(`Ошибка: ${res.status}`));
     }
   }
 
@@ -133,7 +133,8 @@ class MainApi {
 }
 
 const mainApi = new MainApi({
-  baseUrl: 'https://api.peacewalker.nomoredomains.icu',
+  // baseUrl: 'https://api.peacewalker.nomoredomains.icu',
+  baseUrl: 'http://localhost:3005',
 })
 
 export default mainApi;

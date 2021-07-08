@@ -16,6 +16,7 @@ import Register from '../Register/Register';
 import Login from '../Login/Login';
 import Profile from '../Profile/Profile';
 import NotFound from '../NotFound/NotFound';
+import PopupMessage from '../PopupMessage/PopupMessage';
 
 function App() {
   let history = useHistory();
@@ -31,12 +32,14 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [lastSearchQuery, setLastSearchQuery] = useState();
   const [searchError, setSearchError] = useState();
+  const [popupErrMessage, setPopupErrMessage] = useState();
   const [movies, setMovies] = useState([]);
   const [savedMovies, setSavedMovies] = useState([]);
   const [filteredMovies, setFilteredMovies] = useState([]);
 
   // Ниже код относящийся к данным пользователя
   useEffect(() => {
+
     if (token) {
       mainApi.getCurrentUser(token)
       .then((res) => {
@@ -48,6 +51,7 @@ function App() {
         setLoggedIn(true);
         history.push('/movies');
       })
+      .catch((err) => setPopupErrMessage(utils.getErrors(err)));
     }
   }, [history, token]);
 
@@ -59,7 +63,7 @@ function App() {
       .then(() => {
         history.push('/signin');
       })
-      .catch((err) => console.log(err));
+      .catch((err) => setPopupErrMessage(utils.getErrors(err)));
   }
 
   function onLogin (email, password) {
@@ -71,7 +75,7 @@ function App() {
         history.push('/movies');
       }
     })
-    .catch((err) => console.log(err));
+    .catch((err) => setPopupErrMessage(utils.getErrors(err)));
   }
 
   function onLogout () {
@@ -95,7 +99,7 @@ function App() {
       });
       historyPushBackward();
     })
-    .catch((err) => console.log(err));
+    .catch((err) => setPopupErrMessage(utils.getErrors(err)));
   }
 
   // Ниже код относящийся к фильмам
@@ -105,21 +109,19 @@ function App() {
   }, [searchQuery]);
 
   useEffect(() => {
-    setIsPreloaderShown(true);
 
     if (lastSearchQuery) {
       const searchedMovies = utils.filterBySearchQuery(movies, lastSearchQuery);
       const shortMovies = utils.filterByShortFilms(searchedMovies, shortFilmsToggle);
 
       setSearchError(errors.NOT_FOUND);
-      setFilteredMovies(shortMovies);
-      setIsPreloaderShown(false);
+      setFilteredMovies(utils.checkForSavedMovies(shortMovies, savedMovies));
     } else {
-      setIsPreloaderShown(false);
-      setFilteredMovies([]);
       setSearchError(errors.BEGIN_SEARCHING);
+      setFilteredMovies([]);
     }
-  }, [movies, lastSearchQuery, shortFilmsToggle]);
+
+  }, [movies, lastSearchQuery, shortFilmsToggle, savedMovies]);
 
   useEffect(() =>{
       mainApi.getMovies(token)
@@ -152,12 +154,13 @@ function App() {
           })
           .catch((err) => {
             setSearchError(errors.ERROR_500);
+            setPopupErrMessage(utils.getErrors(err));
           })
           .finally(() => {
             setIsPreloaderShown(false);
           });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => setPopupErrMessage(utils.getErrors(err)));
 
   }, [loggedIn, token, searchQuery]);
 
@@ -178,11 +181,9 @@ function App() {
       token: token
     })
     .then((res) => {
-      setSavedMovies([res, ...savedMovies]);
+      setSavedMovies([...savedMovies, res]);
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch((err) => setPopupErrMessage(utils.getErrors(err)));
   }
 
   function onDeleteMovie (id) {
@@ -209,12 +210,13 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
+      <PopupMessage message={popupErrMessage} />
       <div className="page">
         <Switch>
           <Route exact path='/'>
             <Main loggedIn={loggedIn} />
           </Route>
-          <ProtectedRoute exact path='/movies'
+          {loggedIn && (<ProtectedRoute exact path='/movies'
                           loggedIn={loggedIn}
                           component={Movies}
                           isPreloaderShown={isPreloaderShown}
@@ -226,8 +228,8 @@ function App() {
                           onSearchSubmit={onSearchSubmit}
                           filteredMovies={filteredMovies}
                           saved={false}
-                          />
-          <ProtectedRoute exact path='/saved-movies'
+                          />)}
+          {loggedIn && (<ProtectedRoute exact path='/saved-movies'
                           loggedIn={loggedIn}
                           component={SavedMovies}
                           isPreloaderShown={isPreloaderShown}
@@ -236,14 +238,14 @@ function App() {
                           onDeleteMovie={onDeleteMovie}
                           savedMovies={savedMovies}
                           saved={true}
-          />
-          <ProtectedRoute exact path='/profile'
+          />)}
+          {loggedIn && (<ProtectedRoute exact path='/profile'
                           loggedIn={loggedIn}
                           component={Profile}
                           currentUser={currentUser}
                           onLogout={onLogout}
                           onProfileInfoChange={onProfileInfoChange}
-          />
+          />)}
           <Route exact path='/signup'>
             <Register onRegister={onRegister} />
           </Route>

@@ -37,3 +37,19 @@ export function filterByShortFilms (movies, isChecked) {
 
   return results;
 }
+
+export function getErrors (err) {
+  if (err.message === "Ошибка: 400")
+    return 'Данные введены неправильно';
+  if (err.message === "Ошибка: 401")
+    return 'Почта или пароль указаны неверно';
+  if (err.message === "Ошибка: 403")
+    return 'Требуется авторизация';
+  if (err.message === "Ошибка: 404")
+    return 'Запрашиваемый ресурс не найден';
+  if (err.message === "Ошибка: 409")
+    return 'Пользователь с таким email уже существует';
+  if (err.message === "Ошибка: 429")
+    return 'Превышен лимит запросов к серверу. Попробуйте позже';
+  return 'Что-то пошло не так. Ошибка сервера';
+};
