@@ -1,5 +1,5 @@
 import './AboutMe.css';
-import avatar from '../../images/profile_picture.png';
+import avatar from '../../images/profile-picture.jpg';
 
 function AboutMe () {
   return (
@@ -8,15 +8,15 @@ function AboutMe () {
       <div className="student__resume">
         <div className="student__text">
           <div className="student__text-wrapper">
-            <p className="student__name">Виталий</p>
-            <p className="student__job">Фронтенд-разработчик, 30 лет</p>
-            <p className="student__about">Я родился и живу в Саратове, закончил факультет экономики СГУ. У меня есть жена
-              и дочь. Я люблю слушать музыку, а ещё увлекаюсь бегом. Недавно начал кодить. С 2015 года работал в компании «СКБ Контур». После того, как прошёл курс по веб-разработке, начал заниматься фриланс-заказами и ушёл с постоянной работы.
+            <p className="student__name">Павел</p>
+            <p className="student__job">Фронтенд-разработчик, 24 года</p>
+            <p className="student__about">
+              Влюблен в веб-разработку со школьной скамьи. Обожаю творить и создавать что-то новое. Выбрал веб-разработку по причине практически неограниченных возможностей: где дизайн можно подчеркнуть уникальными фишками интерактивности. Кроме того, люблю наблюдать результат своей работы вживую.
             </p>
           </div>
           <ul className="student__social">
             <li className="student__social-item">
-              <a href="https://www.facebook.com/Unkn0wnPl2yer" target="blank" className="link student__social-link">Facebook</a>
+              <a href="https://t.me/pavel_buny" target="blank" className="link student__social-link">Telegram</a>
             </li>
             <li className="student__social-item">
               <a href="https://github.com/paulbuny" target="blank" className="link student__social-link">Github</a>
